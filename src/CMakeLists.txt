@@ -2,5 +2,5 @@
 
 file(GLOB SOURCES "*.cpp")
 
-add_executable(upp ${SOURCES})
-target_sources(upp PUBLIC ${SOURCES})
+add_executable(event ${SOURCES})
+target_sources(event PUBLIC ${SOURCES})
