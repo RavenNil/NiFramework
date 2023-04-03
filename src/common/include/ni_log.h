@@ -11,6 +11,22 @@
 class CNiLog
 {
    public:
+    static CNiLog& Instance()
+    {
+        static CNiLog ins;
+        return ins;
+    };
+
+   private:
+    void Info(const char* fmt, ...);
+    void Debug(const char* fmt, ...);
+    void Error(const char* fmt, ...);
+
+    CNiLog();
+    ~CNiLog(){};
+    CNiLog(const CNiLog&) = delete;
+    CNiLog(CNiLog&&) = delete;
+    CNiLog& operator=(CNiLog&) = delete;
 };
 
 #endif
