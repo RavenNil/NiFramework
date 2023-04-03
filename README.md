@@ -1,0 +1,3 @@
+# NiFramework
+
+Just for fun :)
