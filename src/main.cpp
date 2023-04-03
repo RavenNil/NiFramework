@@ -1,6 +1,6 @@
 /******************************************************
   > File Name: main.cpp
-  > Author: NilRaven
+  > Author: NilNever
   > 
   > Created Time: 2023年04月02日 星期日 19时01分02秒
  *****************************************************/
@@ -8,10 +8,17 @@
 #include <iostream>
 using namespace std;
 
+#include "asio.hpp"
+#include "asio/executor_work_guard.hpp"
 
 int main (int argc, char *argv[])
 {
-    printf("hello world\n");
     
+    asio::io_context ioc;
+
+    asio::executor_work_guard<asio::io_context::executor_type> work_guard(
+        ioc.get_executor());
+    ioc.run();
+
     return 0;
 }

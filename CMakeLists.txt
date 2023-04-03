@@ -15,6 +15,8 @@ endif()
 
 if(${PLATFORM} STREQUAL "IMX6ULL")
     message("Detected Platform is IMX6ULL")
+elseif(${PLATFORM} STREQUAL "X86_64")
+    message("Detected Platform is X86_64")
 else()
     message(FATAL_ERROR "Unknown platform")
 endif()

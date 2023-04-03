@@ -7,7 +7,7 @@ echo_info() { echo -e "\e[32;40m $* \e[0m"; }
 echo_err() { echo -e "\e[41;37m $* \e[0m"; }
 echo_warn() { echo -e "\e[43;37m $* \e[0m"; }
 
-PlatformList=("IMX6ULL");
+PlatformList=("IMX6ULL" "X86_64");
 PLATFORM=""
 set_platform()
 {
@@ -59,7 +59,7 @@ set_complie_mode()
 
 tomb()
 {
-    echo_info "$0 -d [release|debug] -p [IMX6ULL] -n [all|lll|test]"
+    echo_info "$0 -d [release|debug] -p [IMX6ULL|X86_64] -n [all|lll|test]"
 
     echo "PLATFORM is ${PLATFORM}"
     echo "Supported PLATFORM have:"
@@ -122,6 +122,9 @@ main()
 
     if [ ${PLATFORM} == "IMX6ULL" ]; then
         cmakeCmd="${cmakeCmd} -DCMAKE_TOOLCHAIN_FILE=./platform/arm64/imx6ull.cmake"
+    elif [ ${PLATFORM} == "X86_64" ]; then
+        # do nothing use pc toolchains
+        cmakeCmd="${cmakeCmd}"
     else
         echo_warn "unknown paltform"
     fi
