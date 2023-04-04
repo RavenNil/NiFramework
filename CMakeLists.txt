@@ -25,6 +25,7 @@ endif()
 # global header files
 include_directories(./include)
 
+add_subdirectory(./lib/common/)
 
 # src code
 add_subdirectory(./src)
