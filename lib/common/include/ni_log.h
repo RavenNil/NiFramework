@@ -34,11 +34,18 @@ class TCNiLog
     TCNiLog& operator=(TCNiLog&) = delete;
 };
 
-#define NI_LOG_LIB
-#ifdef NI_LOG_LIB
+#if defined(WITH_SPDLOG)
 #include "ni_spdlog.h"
 using CNiLog = TCNiLog<CSpdLogger>;
+#elif defined(WITH_GLOG)
+#include "ni_glog.h"
+using CNiLog = TCNiLog<CGLogger>;
+#else
+#include "ni_fmtlog.h"
+using CNiLog = TCNiLog<CFmtLogger>;
 #endif
+
+#include "fmt/format.h"
 
 inline void DEBUG(const char *msg) { CNiLog::Instance().Debug(msg); }
 template <typename... Args>
