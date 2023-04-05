@@ -15,5 +15,5 @@ target_link_libraries(common PUBLIC fmt::fmt)
 
 # spdlog
 target_link_libraries(common PRIVATE spdlog::spdlog)
-target_include_directories(common PRIVATE ./3thParty/spdlog-1.11.0/include)
+target_include_directories(common PUBLIC ./3thParty/spdlog-1.11.0/include)
 

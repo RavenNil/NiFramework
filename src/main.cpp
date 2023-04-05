@@ -8,6 +8,8 @@
 #include <iostream>
 using namespace std;
 
+#include "ni_log.h"
+
 #include "asio.hpp"
 #include "asio/executor_work_guard.hpp"
 
@@ -18,6 +20,7 @@ int main (int argc, char *argv[])
 
     asio::executor_work_guard<asio::io_context::executor_type> work_guard(
         ioc.get_executor());
+
     ioc.run();
 
     return 0;
