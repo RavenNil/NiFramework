@@ -4,9 +4,7 @@
   > 
   > Created Time: 2023年04月02日 星期日 23时27分42秒
  *****************************************************/
-
-#ifndef __NI_LOG_H__
-#define __NI_LOG_H__
+#pragma once
 
 #include <string>
 
@@ -79,4 +77,3 @@ inline void ERROR(const char *fmt, Args &&...args)
     CNiLog::Instance().Error(msg);
 }
 
-#endif

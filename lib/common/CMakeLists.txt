@@ -1,6 +1,8 @@
 
 project(common)
 
+cmake_minimum_required(VERSION 3.16)
+
 file(GLOB SOURCES "*.cpp")
 
 add_subdirectory(./3thParty/fmt-9.1.0/)
