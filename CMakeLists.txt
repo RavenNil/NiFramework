@@ -14,7 +14,7 @@ if(CMAKE_EXPORT_COMPILE_COMMANDS)
   set(CMAKE_CXX_STANDARD_INCLUDE_DIRECTORIES ${CMAKE_CXX_IMPLICIT_INCLUDE_DIRECTORIES})
 endif()
 
-
+set(PLATFORM "AUTO")
 if(${PLATFORM} STREQUAL "IMX6ULL")
     message("Detected Platform is IMX6ULL")
 elseif(${PLATFORM} STREQUAL "AUTO")
@@ -27,7 +27,7 @@ endif()
 # global header files
 include_directories(./include)
 
-add_subdirectory(./lib/common/)
+add_subdirectory(./lib/ni_common/)
 
 # src code
 add_subdirectory(./src)

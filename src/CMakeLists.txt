@@ -5,4 +5,4 @@ file(GLOB SOURCES "*.cpp")
 
 add_executable(event ${SOURCES})
 target_sources(event PUBLIC ${SOURCES})
-target_link_libraries(event PRIVATE common pthread)
+target_link_libraries(event PRIVATE ni_common pthread)

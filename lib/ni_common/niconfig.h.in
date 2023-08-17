@@ -1,0 +1,8 @@
+#ifndef NI_CONFIG_H_
+
+#cmakedefine WITH_GLOG 1
+#cmakedefine WITH_SPDLOG 1
+
+#cmakedefine WITH_LIBHV 1
+
+#endif  // !NI_CONFIG_H_

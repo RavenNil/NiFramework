@@ -8,7 +8,7 @@
 #include <iostream>
 using namespace std;
 
-#include "ni_log.h"
+// #include "ni_log.h"
 
 #include "asio.hpp"
 #include "asio/executor_work_guard.hpp"
