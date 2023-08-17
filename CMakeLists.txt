@@ -29,5 +29,18 @@ include_directories(./include)
 
 add_subdirectory(./lib/ni_common/)
 
-# src code
-add_subdirectory(./src)
+
+macro(list_source_directories srcs)                                                                                              
+    unset(tmp)                                                                                                                   
+    foreach(dir ${ARGN})                                                                                                         
+        aux_source_directory(${dir} tmp)                                                                                         
+    endforeach()                                                                                                                 
+    set(${srcs} ${tmp})                                                                                                          
+    list(FILTER ${srcs} EXCLUDE REGEX ".*_test\\.c")                                                                             
+endmacro()
+
+set(SOURCE_DIRS src)
+list_source_directories(SOURCE_FILES ${SOURCE_DIRS})
+
+add_executable(event ${SOURCE_FILES})
+target_link_libraries(event PRIVATE ni_common pthread)
