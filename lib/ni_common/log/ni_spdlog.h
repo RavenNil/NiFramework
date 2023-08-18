@@ -1,12 +1,12 @@
 /******************************************************
   > File Name: ni_spdlog.h
   > Author: NilRaven
+  > Description: 
   > 
-  > Created Time: 2023年04月05日 星期三 22时04分28秒
+  > Created Time: Fri 18 Aug 2023 02:59:34 PM CST
  *****************************************************/
 
-#ifndef __NI_SPDLOG_H__
-#define __NI_SPDLOG_H__
+#pragma once
 
 #include "spdlog/common.h"
 #include "spdlog/sinks/rotating_file_sink.h"
@@ -36,25 +36,24 @@ class CSpdLogger
         spdlog::get("file")->set_level(spdlog::level::info);
         spdlog::flush_every(std::chrono::seconds(2));
     }
-    void Info(const std::string &msg)
+    void Info(const char *msg)
     {
         spdlog::info(msg);
         spdlog::get("file")->info(msg);
     }
-    void Debug(const std::string &msg)
+    void Debug(const char *msg)
     {
         spdlog::debug(msg);
         spdlog::get("file")->debug(msg);
     }
-    void Warn(const std::string &msg)
+    void Warn(const char *msg)
     {
         spdlog::warn(msg);
         spdlog::get("file")->warn(msg);
     }
-    void Error(const std::string &msg)
+    void Error(const char *msg)
     {
         spdlog::error(msg);
         spdlog::get("file")->error(msg);
     }
 };
-#endif

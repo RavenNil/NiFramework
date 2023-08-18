@@ -16,22 +16,37 @@ set(CMAKE_VISIBILITY_INLINES_HIDDEN TRUE)
 set(CMAKE_CXX_VISIBILITY_PRESET "hidden")
 
 
-set(NI_COMMON_SRCDIR .)
-set(NI_COMMON_ALL_LIBS fmt::fmt)
-set(LIB_NI_COMMON_HEADERS include niexport.h niconfig.h)
+#各模块源码目录
+set(NI_COMMON_SRCDIR . log event)
+
+#依赖到的库
+set(NI_COMMON_ALL_LIBS fmt::fmt-header-only)
+
+
+set(LIB_NI_COMMON_HEADERS "")
+
+#misc
+set(LIB_NI_COMMON_HEADERS ${LIB_NI_COMMON_HEADERS} ni_common.h niexport.h niconfig.h)
+
+# component
+file(GLOB_RECURSE INCLUDE_HEADERS include/*.h)
+set(LIB_NI_COMMON_HEADERS ${LIB_NI_COMMON_HEADERS} ${INCLUDE_HEADERS})
+
+#log
+set(LIB_NI_COMMON_HEADERS ${LIB_NI_COMMON_HEADERS} log/ni_log.h)
+
+
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/niconfig.h.in ${CMAKE_CURRENT_SOURCE_DIR}/niconfig.h)
 
 if(WITH_SPDLOG)
     add_subdirectory(./3thParty/spdlog-1.11.0/)
     set(NI_COMMON_ALL_LIBS ${NI_COMMON_ALL_LIBS} spdlog::spdlog)
-    set(LIB_NI_COMMON_HEADERS ${LIB_NI_COMMON_HEADERS} ./3thParty/spdlog-1.11.0/include)
 endif()
 
 if(WITH_GLOG)
     add_subdirectory(./3thParty/glog-0.6.0/)
     set(NI_COMMON_ALL_LIBS ${NI_COMMON_ALL_LIBS} glog::glog)
-    # set(LIB_NI_COMMON_HEADERS )
 endif()
 
 if(WITH_GLOG AND WITH_SPDLOG)
@@ -44,11 +59,19 @@ if(WITH_LIBHV)
 endif()
 
 
-file(INSTALL ${LIB_NI_COMMON_HEADERS} DESTINATION include/ni_common)
+file(INSTALL ${LIB_NI_COMMON_HEADERS} DESTINATION ${PROJECT_BINARY_DIR}/include/ni_common)
+# file(INSTALL ${LIB_NI_COMMON_HEADERS} DESTINATION ${PROJECT_SOURCE_DIR}/include/)
 
-add_library(ni_common STATIC ${NI_COMMON_SRCDIR})
+include(cmake/utils.cmake)
+nicmake_list_source_directories(SOURCE_FILES ${NI_COMMON_SRCDIR})
+# file(GLOB_RECURSE SOURCE_FILES ${SROUCE})
+
+add_library(ni_common STATIC)
+target_sources(ni_common PRIVATE ${SOURCE_FILES})
 target_include_directories(ni_common PRIVATE ${NI_COMMON_SRCDIR}
-    INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> $<INSTALL_INTERFACE:include>
+    # INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> $<INSTALL_INTERFACE:include>
+    INTERFACE ${PROJECT_BINARY_DIR}/include/
+    PRIVATE ${PROJECT_BINARY_DIR}/include/ni_common
 )
 target_link_libraries(ni_common PRIVATE ${NI_COMMON_ALL_LIBS})
 

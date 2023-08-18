@@ -12,5 +12,7 @@ using namespace std;
 
 void temp_test()
 {
-    DEBUG("test\n");
+
+    ni_log_print(NI_LOG_LEVEL_DBG, "linsdfsdf");
+
 }

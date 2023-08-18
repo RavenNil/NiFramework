@@ -1,39 +1,37 @@
 /******************************************************
   > File Name: ni_fmtlog.h
   > Author: NilRaven
+  > Description: 
   > 
-  > Created Time: 2023年04月05日 星期三 22时59分21秒
+  > Created Time: Fri 18 Aug 2023 03:12:43 PM CST
  *****************************************************/
 
-#ifndef __NI_FMTLOG_H__
-#define __NI_FMTLOG_H__
+#pragma once
 
 #include "fmt/printf.h"
 
-#include <string>
 class CFmtLogger
 {
    public:
     CFmtLogger() {}
-    void Info(const std::string &msg)
+    void Info(const char *msg)
     {
         fmt::printf(msg);
         fmt::printf("\n");
     }
-    void Debug(const std::string &msg)
+    void Debug(const char *msg)
     {
         fmt::printf(msg);
         fmt::printf("\n");
     }
-    void Warn(const std::string &msg)
+    void Warn(const char *msg)
     {
         fmt::printf(msg);
         fmt::printf("\n");
     }
-    void Error(const std::string &msg)
+    void Error(const char *msg)
     {
         fmt::printf(msg);
         fmt::printf("\n");
     }
 };
-#endif
