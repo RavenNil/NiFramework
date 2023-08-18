@@ -4,7 +4,9 @@ project(ni_common)
 cmake_minimum_required(VERSION 3.16)
 
 
+set(CMAKE_POSITION_INDEPENDENT_CODE TRUE)
 add_subdirectory(./3thParty/fmt-9.1.0/)
+unset(CMAKE_POSITION_INDEPENDENT_CODE)
 
 option(WITH_SPDLOG "Log library use spdlog" ON)
 option(WITH_GLOG "Log library use glog" OFF)
@@ -67,7 +69,8 @@ include(cmake/utils.cmake)
 nicmake_list_source_directories(SOURCE_FILES ${NI_COMMON_SRCDIR})
 # file(GLOB_RECURSE SOURCE_FILES ${SROUCE})
 
-add_library(ni_common STATIC)
+add_library(ni_common SHARED)
+# target_compile_options(ni_common PRIVATE -fPIC)
 target_sources(ni_common PRIVATE ${SOURCE_FILES})
 target_include_directories(ni_common PRIVATE ${NI_COMMON_SRCDIR}
     # INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> $<INSTALL_INTERFACE:include>
