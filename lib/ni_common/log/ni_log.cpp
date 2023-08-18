@@ -17,7 +17,7 @@ using CLogger = CNiSingleton<CSpdLogger>;
 #elif defined(WITH_GLOG)
 
 #include "ni_glog.h"
-using CLogger = CNiSingleton<CGlogger>;
+using CLogger = CNiSingleton<CGLogger>;
 
 #else 
 

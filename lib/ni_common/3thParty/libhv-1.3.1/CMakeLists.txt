@@ -2,19 +2,19 @@ cmake_minimum_required(VERSION 3.6)
 
 project(hv VERSION 1.3.1)
 
-option(BUILD_SHARED "build shared library" ON)
+option(BUILD_SHARED "build shared library" OFF)
 option(BUILD_STATIC "build static library" ON)
 
-option(BUILD_EXAMPLES "build examples" ON)
+option(BUILD_EXAMPLES "build examples" OFF)
 option(BUILD_UNITTEST "build unittest" OFF)
 
 # see config.ini
 option(WITH_PROTOCOL "compile protocol" OFF)
 
-option(WITH_EVPP "compile evpp" ON)
-option(WITH_HTTP "compile http" ON)
-option(WITH_HTTP_SERVER "compile http/server" ON)
-option(WITH_HTTP_CLIENT "compile http/client" ON)
+option(WITH_EVPP "compile evpp" OFF)
+option(WITH_HTTP "compile http" OFF)
+option(WITH_HTTP_SERVER "compile http/server" OFF)
+option(WITH_HTTP_CLIENT "compile http/client" OFF)
 option(WITH_MQTT "compile mqtt" OFF)
 
 option(ENABLE_UDS "Unix Domain Socket" OFF)

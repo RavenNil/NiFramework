@@ -55,7 +55,8 @@ endif()
 
 # event library
 if(WITH_LIBHV)
-
+    add_subdirectory(./3thParty/libhv-1.3.1/)
+    set(NI_COMMON_ALL_LIBS ${NI_COMMON_ALL_LIBS} hv_static)
 endif()
 
 

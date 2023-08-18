@@ -14,7 +14,16 @@ if(CMAKE_EXPORT_COMPILE_COMMANDS)
   set(CMAKE_CXX_STANDARD_INCLUDE_DIRECTORIES ${CMAKE_CXX_IMPLICIT_INCLUDE_DIRECTORIES})
 endif()
 
-set(PLATFORM "AUTO")
+if(NOT DEFINED PLATFORM)
+    set(PLATFORM "AUTO")
+endif()
+
+# 如果不是本地编译，也即属于交叉编译，不搜寻本地路径
+if(NOT ${PLATFORM} STREQUAL "AUTO")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -nostdinc")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -nostdinc")
+endif()
+
 if(${PLATFORM} STREQUAL "IMX6ULL")
     message("Detected Platform is IMX6ULL")
 elseif(${PLATFORM} STREQUAL "AUTO")
