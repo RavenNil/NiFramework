@@ -15,7 +15,8 @@ option(WITH_LIBHV "event library use libhv" ON)
 
 # 默认隐藏所有符号
 set(CMAKE_VISIBILITY_INLINES_HIDDEN TRUE)
-set(CMAKE_CXX_VISIBILITY_PRESET "hidden")
+set(CMAKE_C_VISIBILITY_PRESET hidden)
+set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 
 
 #各模块源码目录
