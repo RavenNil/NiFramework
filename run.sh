@@ -7,8 +7,8 @@ echo_info() { echo -e "\e[32;40m $* \e[0m"; }
 echo_err() { echo -e "\e[41;37m $* \e[0m"; }
 echo_warn() { echo -e "\e[43;37m $* \e[0m"; }
 
-PlatformList=("IMX6ULL" "AUTO");
-PLATFORM=""
+PlatformList=("IMX6ULL" "LOCAL");
+PLATFORM="LOCAL"
 set_platform()
 {
     for name in ${PlatformList[@]}
@@ -59,7 +59,7 @@ set_complie_mode()
 
 tomb()
 {
-    echo_info "$0 -d [release|debug] -p [IMX6ULL|AUTO] -n [all|lll|test]"
+    echo_info "$0 -d [release|debug] -p [IMX6ULL|LOCAL] -n [all|lll|test]"
 
     echo "PLATFORM is ${PLATFORM}"
     echo "Supported PLATFORM have:"
@@ -84,6 +84,11 @@ main()
 
     cmakeCmd="cmake -B build "
     makeCmd="make -C build -j8 "
+
+    if [ $# -eq 0 ]; then
+        tomb;
+        exit 1;
+    fi
 
     while [ $# -gt 0 ]
     do
@@ -122,7 +127,7 @@ main()
 
     if [ ${PLATFORM} == "IMX6ULL" ]; then
         cmakeCmd="${cmakeCmd} -DCMAKE_TOOLCHAIN_FILE=./platform/arm64/imx6ull.cmake"
-    elif [ ${PLATFORM} == "AUTO" ]; then
+    elif [ ${PLATFORM} == "LOCAL" ]; then
         # do nothing use pc toolchains
         cmakeCmd="${cmakeCmd}"
     else

@@ -9,6 +9,7 @@
 using namespace std;
 
 #include "ni_common/ni_log.h"
+#include "CLI11.hpp"
 
 #include "asio.hpp"
 #include "asio/executor_work_guard.hpp"

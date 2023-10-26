@@ -15,19 +15,19 @@ if(CMAKE_EXPORT_COMPILE_COMMANDS)
 endif()
 
 if(NOT DEFINED PLATFORM)
-    set(PLATFORM "AUTO")
+    set(PLATFORM "LOCAL")
 endif()
 
 # 如果不是本地编译，也即属于交叉编译，不搜寻本地路径
-if(NOT ${PLATFORM} STREQUAL "AUTO")
+if(NOT ${PLATFORM} STREQUAL "LOCAL")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -nostdinc")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -nostdinc")
 endif()
 
 if(${PLATFORM} STREQUAL "IMX6ULL")
     message("Detected Platform is IMX6ULL")
-elseif(${PLATFORM} STREQUAL "AUTO")
-    message("Detected Platform is AUTO")
+elseif(${PLATFORM} STREQUAL "LOCAL")
+    message("Detected Platform is LOCAL")
 else()
     message(FATAL_ERROR "Unknown platform")
 endif()
