@@ -13,7 +13,7 @@
 template <typename Derived>
 class CNiCondWaiter
 {
-   public:
+   protected:
     /**
      * @brief notify 
      */
@@ -25,7 +25,7 @@ class CNiCondWaiter
     void NiCondWaiterRun()
     {
         if (!m_bIsRuning) {
-            std::thread(&CNiCondWaiter::Routinue, this).detach();
+            std::thread(&CNiCondWaiter::NiRoutinue, this).detach();
             m_bIsRuning = true;
         }
     }
@@ -38,17 +38,20 @@ class CNiCondWaiter
    private:
     std::condition_variable m_cond;
     std::mutex m_condMtx;
-    bool Predicate() { return static_cast<Derived*>(this)->PredicateImpl(); }
-    int Routinue() {
+    bool NiPredicate() { return static_cast<Derived*>(this)->NiPredicateImpl(); }
+
+    int NiRoutinue()
+    {
         while (true) {
             if (!m_bIsRuning) break;
             // wait
             std::unique_lock<std::mutex> lock(m_condMtx);
-            m_cond.wait(lock, [this]() -> bool { return Predicate(); });
+            m_cond.wait(lock, [this]() -> bool { return NiPredicate(); });
 
             // do job
-            static_cast<Derived*>(this)->RoutinueImpl();
+            static_cast<Derived*>(this)->NiRoutinueImpl();
         }
+        return 0;
     }
     bool m_bIsRuning = false;
 };

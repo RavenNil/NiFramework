@@ -7,25 +7,25 @@
 
 #pragma once
 
-/**
- * @brief CTRP mode, singleton helper ,you should add friend in your class
- *
- * @tparam Derived 
- * @return 
- */
-template <typename Derived>
-class CNiSingleton
-{
-   public:
-    static Derived& Instance()
-    {
-        static Derived instance;
-        return instance;
-    }
+//单例宏，推荐在类的定义中，首行使用
+#define NI_SINGLETON_DECLARE(SingletonClass)                   \
+   public:                                                     \
+    static SingletonClass& Instance()                          \
+    {                                                          \
+        static SingletonClass instance;                        \
+        return instance;                                       \
+    }                                                          \
+                                                               \
+   private:                                                    \
+    SingletonClass(const SingletonClass&) = delete;            \
+    SingletonClass& operator=(const SingletonClass&) = delete; \
+    SingletonClass() = default;                                \
+    ~SingletonClass() = default;
 
-   protected:
-    CNiSingleton() = default;
-    ~CNiSingleton() = default;
-    CNiSingleton(const CNiSingleton&) = delete;
-    CNiSingleton& operator=(const CNiSingleton&) = delete;
-};
+//使用例子
+// class CSingletonExample
+// {
+//     NI_SINGLETON_DECLARE(CSingletonDemo)
+// public:
+// int a;
+// };
