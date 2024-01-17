@@ -119,7 +119,7 @@ snd_pcm_format_t trans_format(const uint16_t &u16format, const uint16_t &u16Bits
             return SND_PCM_FORMAT_UNKNOWN;
         }
     } else {
-        WARN("unknown audio format, default to SND_PCM_FORMAT_UNKNOWN");
+        printf("unknown audio format, default to SND_PCM_FORMAT_UNKNOWN\n");
     }
 
     return SND_PCM_FORMAT_UNKNOWN;

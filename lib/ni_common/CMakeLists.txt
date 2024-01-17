@@ -63,6 +63,10 @@ if(WITH_LIBHV)
 endif()
 
 
+add_subdirectory(./3thParty/libsigc++-3.6.0/)
+set(NI_COMMON_ALL_LIBS ${NI_COMMON_ALL_LIBS} sigc-3.0)
+
+
 file(INSTALL ${LIB_NI_COMMON_HEADERS} DESTINATION ${PROJECT_BINARY_DIR}/include/ni_common)
 # file(INSTALL ${LIB_NI_COMMON_HEADERS} DESTINATION ${PROJECT_SOURCE_DIR}/include/)
 

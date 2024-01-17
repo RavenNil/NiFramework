@@ -9,11 +9,13 @@
 #pragma once
 
 #include "fmt/printf.h"
+#include "ni_singleton.h"
 
 class CFmtLogger
 {
+    NI_SINGLETON_DECLARE(CFmtLogger)
    public:
-    CFmtLogger() {}
+    void Init() {}
     void Info(const char *msg)
     {
         fmt::printf(msg);

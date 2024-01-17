@@ -12,12 +12,12 @@
 #if defined(WITH_SPDLOG)
 
 #include "ni_spdlog.h"
-using CLogger = CNiSingleton<CSpdLogger>;
+using CLogger = CSpdLogger;
 
 #elif defined(WITH_GLOG)
 
 #include "ni_glog.h"
-using CLogger = CNiSingleton<CGLogger>;
+using CLogger = CGLogger;
 
 #else 
 

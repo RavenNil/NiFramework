@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "ni_singleton.h"
 #include "spdlog/common.h"
 #include "spdlog/sinks/rotating_file_sink.h"
 #include "spdlog/spdlog.h"
@@ -16,8 +17,10 @@
 
 class CSpdLogger
 {
+    NI_SINGLETON_DECLARE(CSpdLogger)
    public:
-    CSpdLogger()
+
+    void Init()
     {
         const char *strPattern = "[%Y%m%d %H:%M:%S %z][%^%l%$] [thread %t] %v";
         spdlog::set_pattern(strPattern);
@@ -36,6 +39,7 @@ class CSpdLogger
         spdlog::get("file")->set_level(spdlog::level::info);
         spdlog::flush_every(std::chrono::seconds(2));
     }
+
     void Info(const char *msg)
     {
         spdlog::info(msg);

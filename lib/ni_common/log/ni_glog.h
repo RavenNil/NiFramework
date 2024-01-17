@@ -9,11 +9,13 @@
 #pragma once
 
 #include "glog/logging.h"
+#include "ni_singleton.h"
 
 class CGLogger
 {
+    NI_SINGLETON_DECLARE(CGLogger)
    public:
-    CGLogger()
+    void Init()
     {
         google::InitGoogleLogging("glog");
         // google::SetLogDestination(google::GLOG_INFO, "/path/to/log/file");  // 设置日志文件路径
