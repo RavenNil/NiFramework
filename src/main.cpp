@@ -10,9 +10,9 @@
 #include <thread>
 using namespace std;
 
-#include "ni_common/actor.h"
-#include "ni_common/bus.h"
-#include "ni_common/event.h"
+#include "ni_common/ni_actor.h"
+#include "ni_common/ni_bus.h"
+#include "ni_common/ni_event.h"
 #include "ni_common/ni_log.h"
 
 #include "CLI11.hpp"
@@ -23,7 +23,7 @@ class Event_1 : public CNIEVENT(Event_1)
     double b;
 };
 
-class Test1 : public CActor
+class Test1 : public CNiActor
 {
    public:
     virtual int MsgHandle(uint64_t eventid, void* param2) override final
@@ -33,7 +33,7 @@ class Test1 : public CActor
     }
 };
 
-class Test2 : public CActor
+class Test2 : public CNiActor
 {
    public:
     virtual int MsgHandle(uint64_t eventid, void* param2) override final

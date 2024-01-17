@@ -1,5 +1,5 @@
 /******************************************************
-  > File Name: actor.h
+  > File Name: ni_actor.h
   > Author: NilRaven
   > 
   > Created Time: 2023年04月09日 星期日 23时25分43秒
@@ -14,16 +14,16 @@
 
 #if defined(__cplusplus)
 
-class CActor
+class CNiActor
 {
    public:
     static int OnMessage(void* pListener, uint64_t u64EventId, void* pEvent)
     {
-        ((CActor*)pListener)->MsgHandle(u64EventId, pEvent);
+        ((CNiActor*)pListener)->MsgHandle(u64EventId, pEvent);
         return 0;
     }
 
-    virtual ~CActor(){};
+    virtual ~CNiActor(){};
     virtual int MsgHandle(size_t eventid, void* param2) = 0;
 };
 

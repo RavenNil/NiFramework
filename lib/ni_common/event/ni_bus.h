@@ -1,5 +1,5 @@
 /******************************************************
-  > File Name: lib/common/event/bus.h
+  > File Name: lib/common/event/ni_bus.h
   > Author: NilRaven
   >
   > Created Time: 2023年04月09日 星期日 22时22分32秒
@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "actor.h"
+#include "ni_actor.h"
 #include "ni_singleton.h"
 #include "niexport.h"
 #include <stdint.h>
@@ -45,16 +45,16 @@ class CNiBus
     }
 
     template <typename TEvent>
-    int RegisterEvent(CActor& stActor)
+    int RegisterEvent(CNiActor& stActor)
     {
-        return ni_bus_reg_event(m_pBus, std::decay_t<TEvent>::hash(), &stActor, CActor::OnMessage);
+        return ni_bus_reg_event(m_pBus, std::decay_t<TEvent>::hash(), &stActor, CNiActor::OnMessage);
     }
 
     template <typename TEvent>
-    int UnRegisterEvent(CActor& stActor, const uint64_t eventHash)
+    int UnRegisterEvent(CNiActor& stActor, const uint64_t eventHash)
     {
         return ni_bus_unreg_event(m_pBus, std::decay_t<TEvent>::hash(), &stActor,
-                                  CActor::OnMessage);
+                                  CNiActor::OnMessage);
     };
 
     template <typename TEvent>

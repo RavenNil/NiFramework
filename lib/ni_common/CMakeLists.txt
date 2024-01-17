@@ -39,7 +39,7 @@ set(LIB_NI_COMMON_HEADERS ${LIB_NI_COMMON_HEADERS} ${INCLUDE_HEADERS})
 set(LIB_NI_COMMON_HEADERS ${LIB_NI_COMMON_HEADERS} log/ni_log.h)
 
 #event bus
-set(LIB_NI_COMMON_HEADERS ${LIB_NI_COMMON_HEADERS} ./event/bus.h ./event/actor.h ./event/event.h)
+set(LIB_NI_COMMON_HEADERS ${LIB_NI_COMMON_HEADERS} ./event/ni_bus.h ./event/ni_actor.h ./event/ni_event.h)
 
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/niconfig.h.in ${CMAKE_CURRENT_SOURCE_DIR}/niconfig.h)
