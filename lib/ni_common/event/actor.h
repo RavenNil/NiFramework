@@ -7,11 +7,24 @@
 
 #pragma once
 
+#include "niexport.h"
 #include <unistd.h>
+
+#include <cstdint>
+
+#if defined(__cplusplus)
 
 class CActor
 {
    public:
-    virtual ~CActor();
-    virtual int OnMessage(size_t eventid, int param1, void* param2, int size) = 0;
+    static int OnMessage(void* pListener, uint64_t u64EventId, void* pEvent)
+    {
+        ((CActor*)pListener)->MsgHandle(u64EventId, pEvent);
+        return 0;
+    }
+
+    virtual ~CActor(){};
+    virtual int MsgHandle(size_t eventid, void* param2) = 0;
 };
+
+#endif

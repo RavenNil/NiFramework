@@ -10,39 +10,86 @@
 #include "actor.h"
 #include "ni_log.h"
 
-// void CNiBus::RegisterEvent(size_t eventId, CActor* pObj)
-// {
-//     if (m_eventListeners.find(eventId) == m_eventListeners.end()) {
-//         m_eventListeners[eventId] = {};
-//     }
-//
-//     //不允许多次注册
-//     auto vecIt = std::find(m_eventListeners.begin(), m_eventListeners.end(), pObj);
-//     if (vecIt == m_eventListeners.end()) {
-//         m_eventListeners[eventId].push_back(pObj);
-//     } else {
-//         // ERROR("Not Allow Register multi event in one obj");
-//     }
-// }
+#include <algorithm>
+#include <mutex>
+#include <unordered_map>
+#include <vector>
 
-void CNiBus::RegisterEvent(CActor* pstAcotr, const NiEventHash_t eventHash)
+struct ni_bus_t {
+    int test_id;
+    std::mutex m_eventListenersMtx;
+    std::unordered_map<uint64_t, std::vector<void*>> m_eventListeners;
+    std::unordered_map<void*, cb_event_t> m_actorCb;
+};
+
+ni_bus_t* ni_bus_alloc()
 {
-    // DEBUG("Register Event");
+    //
+    return new ni_bus_t;
 }
 
-void CNiBus::UnRegisterEvent(CActor* pstAcotr, const NiEventHash_t eventHash)
+int ni_bus_free(ni_bus_t* pBus)
 {
-    // DEBUG("UnRegisterEvent Event");
+    delete pBus;
+    return 0;
 }
 
-void CNiBus::SendEvent(const NiEventHash_t eventHash)
+int ni_bus_reg_event(ni_bus_t* pBus, uint64_t u64EventId, void* pListener, cb_event_t cb)
 {
-    // DEBUG("SendEvent Event");
-    // DEBUG("SendEvent Event");
+    std::unique_lock<std::mutex> lk(pBus->m_eventListenersMtx);
+    pBus->m_eventListeners[u64EventId].push_back(pListener);
+    pBus->m_actorCb[pListener] = cb;
+    return 0;
 }
 
-void CNiBus::PostEvent(const NiEventHash_t eventHash)
+int ni_bus_unreg_event(ni_bus_t* pBus, uint64_t u64EventId, void* pListener, cb_event_t cb)
 {
-    // DEBUG("PostEvent Event");
-    // DEBUG("PostEvent Event");
+    std::unique_lock<std::mutex> lk(pBus->m_eventListenersMtx);
+    if (pBus->m_eventListeners.find(u64EventId) == pBus->m_eventListeners.end()) {
+        return -1;
+    }
+    auto& vec = pBus->m_eventListeners[u64EventId];
+    auto it = std::find(vec.begin(), vec.end(), pListener);
+    if(it != vec.end()){
+        pBus->m_eventListeners[u64EventId].erase(it);
+    }
+    pBus->m_actorCb[pListener] = nullptr;
+    return 0;
+}
+
+int ni_bus_request(ni_bus_t* pBus, uint64_t u64EventId, void* pstEvent)
+{
+    std::unique_lock<std::mutex> lk(pBus->m_eventListenersMtx);
+    if (pBus->m_eventListeners.find(u64EventId) == pBus->m_eventListeners.end()) {
+        return -1;
+    }
+
+    auto& vec = pBus->m_eventListeners[u64EventId];
+    for (void* pListener : vec) {
+        cb_event_t cb = pBus->m_actorCb[pListener];
+        if (cb) {
+            cb(pListener, u64EventId, pstEvent);
+        }
+    }
+
+    return 0 ;
+}
+
+int ni_bus_post_msg(ni_bus_t* pBus, uint64_t u64EventId, void* pstEvent)
+{
+    // todo 建立事件循环来实现
+    std::unique_lock<std::mutex> lk(pBus->m_eventListenersMtx);
+    if (pBus->m_eventListeners.find(u64EventId) == pBus->m_eventListeners.end()) {
+        return -1;
+    }
+
+    auto& vec = pBus->m_eventListeners[u64EventId];
+    for (void* pListener : vec) {
+        cb_event_t cb = pBus->m_actorCb[pListener];
+        if (cb) {
+            cb(pListener, u64EventId, pstEvent);
+        }
+    }
+
+    return 0;
 }

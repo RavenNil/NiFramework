@@ -5,26 +5,62 @@
   > Created Time: 2023年04月02日 星期日 19时01分02秒
  *****************************************************/
 
+#include <chrono>
 #include <iostream>
+#include <thread>
 using namespace std;
 
+#include "ni_common/actor.h"
+#include "ni_common/bus.h"
+#include "ni_common/event.h"
 #include "ni_common/ni_log.h"
+
 #include "CLI11.hpp"
 
-#include "asio.hpp"
-#include "asio/executor_work_guard.hpp"
+class Event_1 : public CNIEVENT(Event_1)
+{
+    int a;
+    double b;
+};
+
+class Test1 : public CActor
+{
+   public:
+    virtual int MsgHandle(uint64_t eventid, void* param2) override final
+    {
+        printf("test 1 handle msg %lu eventid\n", eventid);
+        return 0;
+    }
+};
+
+class Test2 : public CActor
+{
+   public:
+    virtual int MsgHandle(uint64_t eventid, void* param2) override final
+    {
+        printf("test 2 handle msg %lu eventid\n", eventid);
+        return 0;
+    }
+};
 
 int main (int argc, char *argv[])
 {
-    
-    asio::io_context ioc;
+    auto& bus = CNiBusDefault::Instance();
+    bus.Init();
 
-    asio::executor_work_guard<asio::io_context::executor_type> work_guard(
-        ioc.get_executor());
+    Test1 test1;
+    bus.RegisterEvent<Event_1>(test1);
 
-    ni_log_print(NI_LOG_LEVEL_DBG, "teset test");
+    Test2 test2;
+    bus.RegisterEvent<Event_1>(test2);
 
-    ioc.run();
+    while (1) {
+        Event_1 event;
+
+        bus.PostEvent(event);
+
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+    }
 
     return 0;
 }
