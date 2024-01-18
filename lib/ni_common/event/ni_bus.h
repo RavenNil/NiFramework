@@ -12,6 +12,10 @@
 #include "niexport.h"
 #include <stdint.h>
 
+#if defined(__cplusplus)
+extern "C" {
+#endif
+
 struct ni_bus_t;
 
 typedef int (*cb_event_t)(void* pListener, uint64_t u64EventId, void* pData);
@@ -25,6 +29,11 @@ NI_EXPORT int ni_bus_unreg_event(ni_bus_t* pBus, uint64_t u64EventId, void* pLis
                                  cb_event_t cb);
 NI_EXPORT int ni_bus_request(ni_bus_t* pBus, uint64_t u64EventId, void* pstEvent);
 NI_EXPORT int ni_bus_post_msg(ni_bus_t* pBus, uint64_t u64EventId, void* pstEvent);
+
+#if defined(__cplusplus)
+}
+#endif
+
 
 #if defined(__cplusplus)
 

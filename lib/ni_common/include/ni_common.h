@@ -14,4 +14,14 @@
 
 #include "ni_log.h"
 
+#include "ni_bus.h"
+#include "ni_event.h"
+#include "ni_actor.h"
+
+#include "ni_condwaiter.h"
+#include "ni_singleton.h"
+#include "ni_spin_lock.h"
+#include "ni_obj_pool.h"
+#include "ni_fifo.h"
+
 #endif

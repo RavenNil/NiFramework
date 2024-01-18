@@ -5,16 +5,12 @@
   > Created Time: 2023年04月02日 星期日 19时01分02秒
  *****************************************************/
 
-#include "ni_common/ni_fifo.h"
 #include <chrono>
 #include <iostream>
 #include <thread>
 using namespace std;
 
-#include "ni_common/ni_actor.h"
-#include "ni_common/ni_bus.h"
-#include "ni_common/ni_event.h"
-#include "ni_common/ni_log.h"
+#include "ni_common/ni_common.h"
 
 #include "CLI11.hpp"
 
@@ -65,6 +61,7 @@ int main (int argc, char *argv[])
 
     char f = 'b';
 
+
     CNiFifo<char> fifo;
     fifo.Init(32);
     fifo.Put('c');
@@ -74,6 +71,8 @@ int main (int argc, char *argv[])
     char res;
     fifo.Get(res);
     cout << res << endl;
+
+
     fifo.Get(res);
     cout << res << endl;
 

@@ -144,7 +144,7 @@ class CNiFifo
         return 0;
     }
 
-    bool Put(T&& val) { return Put(std::forward<T>(val)); }
+    bool Put(T&& val) { return Put(val); }
     bool Put(T& val)
     {
         if (!ni_fifo_is_full(m_pFifo)) {

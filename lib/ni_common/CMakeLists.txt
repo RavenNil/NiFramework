@@ -29,7 +29,7 @@ set(NI_COMMON_ALL_LIBS fmt::fmt-header-only)
 set(LIB_NI_COMMON_HEADERS "")
 
 #misc
-set(LIB_NI_COMMON_HEADERS ${LIB_NI_COMMON_HEADERS} ni_common.h niexport.h niconfig.h)
+set(LIB_NI_COMMON_HEADERS ${LIB_NI_COMMON_HEADERS}  niexport.h niconfig.h)
 
 # component
 file(GLOB_RECURSE INCLUDE_HEADERS include/*.h)
