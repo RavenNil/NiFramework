@@ -30,10 +30,10 @@ NI_EXPORT int ni_bus_post_msg(ni_bus_t* pBus, uint64_t u64EventId, void* pstEven
 
 #include <type_traits>
 
-template <typename TBus>
+template <typename TBusType>
 class CNiBus
 {
-    NI_SINGLETON_DECLARE(CNiBus<TBus>)
+    NI_SINGLETON_DECLARE(CNiBus<TBusType>)
    public:
     int Init()
     {

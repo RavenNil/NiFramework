@@ -6,6 +6,9 @@
  *****************************************************/
 #pragma once
 
+
+
+#if defined (__cplusplus)
 #include <condition_variable>
 #include <mutex>
 #include <thread>
@@ -56,3 +59,4 @@ class CNiCondWaiter
     bool m_bIsRuning = false;
 };
 
+#endif

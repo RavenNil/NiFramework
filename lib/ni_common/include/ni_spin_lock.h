@@ -8,8 +8,11 @@
 
 #pragma once
 
+#if defined(__cplusplus)
+
 #include <atomic>
 #include <thread>
+
 class CNiSnipLock
 {
    public:
@@ -28,3 +31,5 @@ class CNiSnipLock
    private:
     std::atomic<bool> lockFlag = {false};  // Initially unlocked
 };
+
+#endif

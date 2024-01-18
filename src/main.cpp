@@ -5,6 +5,7 @@
   > Created Time: 2023年04月02日 星期日 19时01分02秒
  *****************************************************/
 
+#include "ni_common/ni_fifo.h"
 #include <chrono>
 #include <iostream>
 #include <thread>
@@ -45,22 +46,36 @@ class Test2 : public CNiActor
 
 int main (int argc, char *argv[])
 {
-    auto& bus = CNiBusDefault::Instance();
-    bus.Init();
+    // auto& bus = CNiBusDefault::Instance();
+    // bus.Init();
+    //
+    // Test1 test1;
+    // bus.RegisterEvent<Event_1>(test1);
+    //
+    // Test2 test2;
+    // bus.RegisterEvent<Event_1>(test2);
+    //
+    // while (1) {
+    //     Event_1 event;
+    //
+    //     bus.PostEvent(event);
+    //
+    //     std::this_thread::sleep_for(std::chrono::seconds(1));
+    // }
 
-    Test1 test1;
-    bus.RegisterEvent<Event_1>(test1);
+    char f = 'b';
 
-    Test2 test2;
-    bus.RegisterEvent<Event_1>(test2);
+    CNiFifo<char> fifo;
+    fifo.Init(32);
+    fifo.Put('c');
+    fifo.Put(f);
 
-    while (1) {
-        Event_1 event;
 
-        bus.PostEvent(event);
-
-        std::this_thread::sleep_for(std::chrono::seconds(1));
-    }
+    char res;
+    fifo.Get(res);
+    cout << res << endl;
+    fifo.Get(res);
+    cout << res << endl;
 
     return 0;
 }
