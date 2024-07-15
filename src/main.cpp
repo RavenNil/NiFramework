@@ -1,6 +1,6 @@
 /******************************************************
   > File Name: main.cpp
-  > Author: NilNever
+  > Author: NilRaven
   > 
   > Created Time: 2023年04月02日 星期日 19时01分02秒
  *****************************************************/
@@ -14,16 +14,21 @@ using namespace std;
 
 #include "CLI11.hpp"
 
-class Event_1 : public CNIEVENT(Event_1)
-{
+struct Event_1 : public CNIEVENT(Event_1) {
     int a;
     double b;
+};
+struct Event_2 : public CNIEVENT(Event_2) {
+    int a;
+    double b;
+    double c;
+    double h;
 };
 
 class Test1 : public CNiActor
 {
    public:
-    virtual int MsgHandle(uint64_t eventid, void* param2) override final
+    int MsgHandle(uint64_t eventid, void* param2) final
     {
         printf("test 1 handle msg %lu eventid\n", eventid);
         return 0;
@@ -33,7 +38,7 @@ class Test1 : public CNiActor
 class Test2 : public CNiActor
 {
    public:
-    virtual int MsgHandle(uint64_t eventid, void* param2) override final
+    int MsgHandle(uint64_t eventid, void* param2) final
     {
         printf("test 2 handle msg %lu eventid\n", eventid);
         return 0;
@@ -42,39 +47,26 @@ class Test2 : public CNiActor
 
 int main (int argc, char *argv[])
 {
-    // auto& bus = CNiBusDefault::Instance();
-    // bus.Init();
-    //
-    // Test1 test1;
-    // bus.RegisterEvent<Event_1>(test1);
-    //
-    // Test2 test2;
-    // bus.RegisterEvent<Event_1>(test2);
-    //
-    // while (1) {
-    //     Event_1 event;
-    //
-    //     bus.PostEvent(event);
-    //
-    //     std::this_thread::sleep_for(std::chrono::seconds(1));
-    // }
 
-    char f = 'b';
+    Test1 test1;
+    test1.RegisterEvent<Event_1>();
+    test1.RegisterEvent<Event_2>();
+
+    Test2 test2;
+    test1.RegisterEvent<Event_1>();
+    test1.RegisterEvent<Event_2>();
 
 
-    CNiFifo<char> fifo;
-    fifo.Init(32);
-    fifo.Put('c');
-    fifo.Put(f);
+    while (1) {
+        Event_1 event;
+        test1.PostEvent(event);
 
+        Event_2 event_2;
+        test1.PostEvent(event_2);
 
-    char res;
-    fifo.Get(res);
-    cout << res << endl;
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+    }
 
-
-    fifo.Get(res);
-    cout << res << endl;
 
     return 0;
 }

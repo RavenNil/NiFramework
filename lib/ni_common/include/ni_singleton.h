@@ -7,7 +7,8 @@
 
 #pragma once
 
-//单例宏，推荐在类的定义中，首行使用
+// 单例宏，推荐在类的定义中，首行使用
+// 必须自己实现构造函数
 #define NI_SINGLETON_DECLARE(SingletonClass)                   \
    public:                                                     \
     static SingletonClass& Instance()                          \
@@ -19,7 +20,8 @@
    private:                                                    \
     SingletonClass(const SingletonClass&) = delete;            \
     SingletonClass& operator=(const SingletonClass&) = delete; \
-    SingletonClass() = default;                                \
+    SingletonClass(SingletonClass&&) = delete;                 \
+    SingletonClass& operator=(SingletonClass&&) = delete;      \
     ~SingletonClass() = default;
 
 //使用例子

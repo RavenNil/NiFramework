@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "ni_actor.h"
+#include "ni_iactor.h"
 #include "ni_singleton.h"
 #include "niexport.h"
 #include <stdint.h>
@@ -38,48 +38,81 @@ NI_EXPORT int ni_bus_post_msg(ni_bus_t* pBus, uint64_t u64EventId, void* pstEven
 #if defined(__cplusplus)
 
 #include <type_traits>
+#include <cstdint>
 
-template <typename TBusType>
-class CNiBus
+class CNiActor;
+static int OnMessage(void* pListener, uint64_t u64EventId, void* pEvent)
 {
-    NI_SINGLETON_DECLARE(CNiBus<TBusType>)
-   public:
-    int Init()
+    ((INiActor*)pListener)->MsgHandle(u64EventId, pEvent);
+    return 0;
+}
+
+class CNiBusBase
+{
+   protected:
+    CNiBusBase()
     {
         if (!m_pBus) {
             m_pBus = ni_bus_alloc();
         }
-
-        return 0;
     }
+
+    int RegisterEvent(CNiActor& stActor, uint64_t u64EventId)
+    {
+        return ni_bus_reg_event(m_pBus, u64EventId, &stActor, OnMessage);
+    }
+
+    int UnRegisterEvent(CNiActor& stActor, const uint64_t u64EventId)
+    {
+        return ni_bus_unreg_event(m_pBus, u64EventId, &stActor, OnMessage);
+    };
+
+    int Request(void* pstEvent, const uint64_t u64EventId)
+    {
+        return ni_bus_request(m_pBus, u64EventId, pstEvent);
+    }
+
+    int PostEvent(void* pstEvent, const uint64_t u64EventId)
+    {
+        return ni_bus_post_msg(m_pBus, u64EventId, pstEvent);
+    }
+
+   private:
+    ni_bus_t* m_pBus = nullptr;
+
+};
+
+template <typename TBusType>
+class CNiBus : private CNiBusBase
+{
+    NI_SINGLETON_DECLARE(CNiBus<TBusType>)
+
+   public:
+    CNiBus() : CNiBusBase() {}
 
     template <typename TEvent>
     int RegisterEvent(CNiActor& stActor)
     {
-        return ni_bus_reg_event(m_pBus, std::decay_t<TEvent>::hash(), &stActor, CNiActor::OnMessage);
+        return CNiBusBase::RegisterEvent(stActor, std::decay_t<TEvent>::hash());
     }
 
     template <typename TEvent>
-    int UnRegisterEvent(CNiActor& stActor, const uint64_t eventHash)
+    int UnRegisterEvent(CNiActor& stActor)
     {
-        return ni_bus_unreg_event(m_pBus, std::decay_t<TEvent>::hash(), &stActor,
-                                  CNiActor::OnMessage);
+        return CNiBusBase::UnRegisterEvent(stActor, std::decay_t<TEvent>::hash());
     };
 
     template <typename TEvent>
     int Request(TEvent&& stEvent)
     {
-        return ni_bus_request(m_pBus, std::decay_t<TEvent>::hash(), &stEvent);
+        return CNiBusBase::Request(&stEvent, std::decay_t<TEvent>::hash());
     }
 
     template <typename TEvent>
     int PostEvent(TEvent&& stEvent)
     {
-        return ni_bus_post_msg(m_pBus, std::decay_t<TEvent>::hash(), &stEvent);
+        return CNiBusBase::PostEvent(&stEvent, std::decay_t<TEvent>::hash());
     }
-
-   private:
-    ni_bus_t* m_pBus = nullptr;
 };
 
 //全局的默认事件总线

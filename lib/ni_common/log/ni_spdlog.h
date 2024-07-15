@@ -19,8 +19,7 @@ class CSpdLogger
 {
     NI_SINGLETON_DECLARE(CSpdLogger)
    public:
-
-    void Init()
+    CSpdLogger()
     {
         const char *strPattern = "[%Y%m%d %H:%M:%S %z][%^%l%$] [thread %t] %v";
         spdlog::set_pattern(strPattern);

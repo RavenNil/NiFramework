@@ -12,7 +12,6 @@
 #include <memory.h>
 #include <stdint.h>
 #include <stdio.h>
-#include <utility>
 
 typedef struct ni_fifo_u {
     uint32_t m_in = 0;
@@ -126,29 +125,29 @@ NI_EXPORT int ni_fifo_unused(ni_fifo_t* pFifo);
 #if defined (__cplusplus)
 #include <atomic>
 #include <cstdint>
+#include <utility>
 #include <memory>
 
-template <typename T>
-class CNiFifo
+class CNiFifoBase
 {
-   public:
-    /**
-     * @brief 分配元素数，实际空间会自动适配到2的幂次方
-     *
-     * @param size 元素个数
-     * @return
-     */
-    int Init(uint32_t size)
+   protected:
+    CNiFifoBase(std::size_t total_size, std::size_t sizeof_elem)
+        : m_totalsize(total_size), m_elemsize(sizeof_elem)
     {
-        m_pFifo = ni_fifo_alloc(size, sizeof(T));
-        return 0;
+        m_pFifo = ni_fifo_alloc(m_totalsize, m_elemsize);
+        printf("sizeof_elem size %lu\n", sizeof_elem);
+        printf("total size %lu\n", total_size);
     }
 
-    bool Put(T&& val) { return Put(val); }
-    bool Put(T& val)
+    ~CNiFifoBase() noexcept { ni_fifo_free(m_pFifo); }
+
+    uint32_t Esize() { return m_pFifo->m_esize; }
+
+    bool Put(void* pVal)
     {
         if (!ni_fifo_is_full(m_pFifo)) {
-            memcpy(&((T*)m_pFifo->m_data)[(m_pFifo->m_in & m_pFifo->m_mask)], &val, sizeof(val));
+            memcpy(m_pFifo->m_data + (m_pFifo->m_in & m_pFifo->m_mask) * m_elemsize, pVal,
+                   m_elemsize);
             std::atomic_thread_fence(std::memory_order_release);
             m_pFifo->m_in++;
             return true;
@@ -156,11 +155,11 @@ class CNiFifo
         return false;
     }
 
-    bool Get(T&& val) { return Get(val); }
-    bool Get(T& val)
+    bool Get(void* pVal)
     {
         if (!ni_fifo_is_empty(m_pFifo)) {
-            memcpy(&val, &((T*)m_pFifo->m_data)[(m_pFifo->m_out & m_pFifo->m_mask)], sizeof(val));
+            memcpy(pVal, m_pFifo->m_data + (m_pFifo->m_out & m_pFifo->m_mask) * m_elemsize,
+                   m_elemsize);
             std::atomic_thread_fence(std::memory_order_release);
             m_pFifo->m_out++;
             return true;
@@ -168,9 +167,26 @@ class CNiFifo
         return false;
     }
 
-    uint32_t Esize() { return m_pFifo->m_esize; }
-
    private:
-    ni_fifo_t* m_pFifo = nullptr;
+    ni_fifo_t* m_pFifo{nullptr};
+    std::size_t m_totalsize{0};
+    std::size_t m_elemsize{0};
 };
+
+template <typename T>
+class CNiFifo : private CNiFifoBase
+{
+   public:
+    using value_type = T;
+
+    explicit CNiFifo(std::size_t total_size) : CNiFifoBase(total_size, sizeof(value_type)) {}
+
+    uint32_t Esize() { return CNiFifoBase::Esize(); }
+
+    bool Put(value_type& val) { return CNiFifoBase::Put(&val); }
+    bool Get(value_type& val) { return CNiFifoBase::Get(&val); }
+    bool Put(value_type&& val) { return CNiFifoBase::Put(&val); }
+    bool Get(value_type&& val) { return CNiFifoBase::Get(&val); }
+};
+
 #endif

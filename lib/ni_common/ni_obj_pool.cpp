@@ -9,6 +9,8 @@
 #include "include/ni_obj_pool.h"
 
 #include <memory.h>
+#include <cstdio>
+#include <cstdlib>
 
 static constexpr int NEXT_IS_NULL = -1;
 

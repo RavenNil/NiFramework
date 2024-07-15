@@ -10,8 +10,14 @@
 
 #include "ni_log.h"
 #include <memory.h>
+#include <cstdlib>
 
-#define min(x, y) ((x) < (y) ? (x) : (y))
+
+template <typename T>
+T min(T x, T y)
+{
+    return x < y ? x : y;
+}
 
 static inline uint32_t roundup_pow_of_two(uint32_t v)
 {

@@ -10,21 +10,43 @@
 #include "niexport.h"
 #include <unistd.h>
 
-#include <cstdint>
 
 #if defined(__cplusplus)
+#include "ni_bus.h"
+#include "ni_iactor.h"
 
-class CNiActor
+#include <cstdint>
+#include <type_traits>
+#include <utility>
+
+class CNiActor: public INiActor
 {
    public:
-    static int OnMessage(void* pListener, uint64_t u64EventId, void* pEvent)
+    template <typename TEvent, typename TEventBus = CNiBusDefault>
+    int RegisterEvent()
     {
-        ((CNiActor*)pListener)->MsgHandle(u64EventId, pEvent);
-        return 0;
+        return TEventBus::Instance().template RegisterEvent<TEvent>(*this);
     }
 
-    virtual ~CNiActor(){};
-    virtual int MsgHandle(size_t eventid, void* param2) = 0;
+    template <typename TEvent, typename TEventBus = CNiBusDefault>
+    int UnRegisterEvent()
+    {
+        return TEventBus::Instance().template UnRegisterEvent<TEvent>(*this);
+    };
+
+    template <typename TEvent, typename TEventBus = CNiBusDefault>
+    int PostEvent(TEvent&& stEvent)
+    {
+        return TEventBus::Instance().template PostEvent<TEvent>(std::forward<TEvent>(stEvent));
+    }
+
+    template <typename TEvent, typename TEventBus = CNiBusDefault>
+    int Request(TEvent&& stEvent)
+    {
+        return TEventBus::Instance().template Request(std::forward<TEvent>(stEvent));
+    }
+
+    virtual ~CNiActor() = default;
 };
 
 #endif

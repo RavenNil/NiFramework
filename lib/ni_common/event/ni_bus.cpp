@@ -11,15 +11,18 @@
 #include "ni_log.h"
 
 #include <algorithm>
+#include <condition_variable>
 #include <mutex>
+#include <shared_mutex>
 #include <unordered_map>
 #include <vector>
 
 struct ni_bus_t {
     int test_id;
-    std::mutex m_eventListenersMtx;
+    std::shared_timed_mutex m_eventListenersMtx;
     std::unordered_map<uint64_t, std::vector<void*>> m_eventListeners;
     std::unordered_map<void*, cb_event_t> m_actorCb;
+    std::condition_variable m_eventCond;
 };
 
 ni_bus_t* ni_bus_alloc()
@@ -36,7 +39,7 @@ int ni_bus_free(ni_bus_t* pBus)
 
 int ni_bus_reg_event(ni_bus_t* pBus, uint64_t u64EventId, void* pListener, cb_event_t cb)
 {
-    std::unique_lock<std::mutex> lk(pBus->m_eventListenersMtx);
+    std::unique_lock<std::shared_timed_mutex> lk(pBus->m_eventListenersMtx);
     pBus->m_eventListeners[u64EventId].push_back(pListener);
     pBus->m_actorCb[pListener] = cb;
     return 0;
@@ -44,7 +47,7 @@ int ni_bus_reg_event(ni_bus_t* pBus, uint64_t u64EventId, void* pListener, cb_ev
 
 int ni_bus_unreg_event(ni_bus_t* pBus, uint64_t u64EventId, void* pListener, cb_event_t cb)
 {
-    std::unique_lock<std::mutex> lk(pBus->m_eventListenersMtx);
+    std::unique_lock<std::shared_timed_mutex> lk(pBus->m_eventListenersMtx);
     if (pBus->m_eventListeners.find(u64EventId) == pBus->m_eventListeners.end()) {
         return -1;
     }
@@ -59,7 +62,7 @@ int ni_bus_unreg_event(ni_bus_t* pBus, uint64_t u64EventId, void* pListener, cb_
 
 int ni_bus_request(ni_bus_t* pBus, uint64_t u64EventId, void* pstEvent)
 {
-    std::unique_lock<std::mutex> lk(pBus->m_eventListenersMtx);
+    std::shared_lock<std::shared_timed_mutex> lk(pBus->m_eventListenersMtx);
     if (pBus->m_eventListeners.find(u64EventId) == pBus->m_eventListeners.end()) {
         return -1;
     }
@@ -78,7 +81,7 @@ int ni_bus_request(ni_bus_t* pBus, uint64_t u64EventId, void* pstEvent)
 int ni_bus_post_msg(ni_bus_t* pBus, uint64_t u64EventId, void* pstEvent)
 {
     // todo 建立事件循环来实现
-    std::unique_lock<std::mutex> lk(pBus->m_eventListenersMtx);
+    std::shared_lock<std::shared_timed_mutex> lk(pBus->m_eventListenersMtx);
     if (pBus->m_eventListeners.find(u64EventId) == pBus->m_eventListeners.end()) {
         return -1;
     }
