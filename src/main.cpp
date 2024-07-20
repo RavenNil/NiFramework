@@ -40,7 +40,11 @@ class Test2 : public CNiActor
    public:
     int MsgHandle(uint64_t eventid, void* param2) final
     {
-        printf("test 2 handle msg %lu eventid\n", eventid);
+        switch (eventid) {
+            case Event_2::hash():
+                printf("test 2 handle msg %lu eventid\n", eventid);
+        }
+
         return 0;
     }
 };
