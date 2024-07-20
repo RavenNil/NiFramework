@@ -19,10 +19,12 @@ if(NOT DEFINED PLATFORM)
 endif()
 
 # 如果不是本地编译，也即属于交叉编译，不搜寻本地路径
-if(NOT ${PLATFORM} STREQUAL "LOCAL")
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -nostdinc")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -nostdinc")
-endif()
+# if(NOT ${PLATFORM} STREQUAL "LOCAL")
+#     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -nostdinc")
+#     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -nostdinc")
+# endif()
+
+include(${CMAKE_TOOLCHAIN_FILE})
 
 if(${PLATFORM} STREQUAL "IMX6ULL")
     message("Detected Platform is IMX6ULL")

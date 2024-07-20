@@ -11,12 +11,13 @@
 #if defined(__cplusplus)
 
 #include <cstddef>
+#include <cstdint>
 
 class INiActor
 {
    public:
     virtual ~INiActor() = default;
-    virtual int MsgHandle(size_t eventid, void* param2) = 0;
+    virtual int MsgHandle(uint64_t eventid, void* param2) = 0;
 };
 
 #endif

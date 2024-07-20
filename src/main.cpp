@@ -25,12 +25,20 @@ struct Event_2 : public CNIEVENT(Event_2) {
     double h;
 };
 
+class Sender : public CNiActor
+{
+   public:
+    int MsgHandle(uint64_t eventid, void* param2) final
+    {
+        return 0;
+    }
+};
 class Test1 : public CNiActor
 {
    public:
     int MsgHandle(uint64_t eventid, void* param2) final
     {
-        printf("test 1 handle msg %lu eventid\n", eventid);
+        printf("test 1 handle msg %llu eventid \n", eventid);
         return 0;
     }
 };
@@ -42,7 +50,7 @@ class Test2 : public CNiActor
     {
         switch (eventid) {
             case Event_2::hash():
-                printf("test 2 handle msg %lu eventid\n", eventid);
+                printf("test 2 handle msg %llu eventid\n", eventid);
         }
 
         return 0;
@@ -57,16 +65,17 @@ int main (int argc, char *argv[])
     test1.RegisterEvent<Event_2>();
 
     Test2 test2;
-    test1.RegisterEvent<Event_1>();
-    test1.RegisterEvent<Event_2>();
+    test2.RegisterEvent<Event_1>();
+    test2.RegisterEvent<Event_2>();
 
+    Sender sender;
 
     while (1) {
         Event_1 event;
-        test1.PostEvent(event);
+        sender.PostEvent(event);
 
         Event_2 event_2;
-        test1.PostEvent(event_2);
+        sender.PostEvent(event_2);
 
         std::this_thread::sleep_for(std::chrono::seconds(1));
     }
