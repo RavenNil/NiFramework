@@ -148,8 +148,8 @@ class CNiFifoBase
         if (!ni_fifo_is_full(m_pFifo)) {
             memcpy(m_pFifo->m_data + (m_pFifo->m_in & m_pFifo->m_mask) * m_elemsize, pVal,
                    m_elemsize);
-            std::atomic_thread_fence(std::memory_order_release);
             m_pFifo->m_in++;
+            std::atomic_thread_fence(std::memory_order_release);
             return true;
         }
         return false;
@@ -160,7 +160,7 @@ class CNiFifoBase
         if (!ni_fifo_is_empty(m_pFifo)) {
             memcpy(pVal, m_pFifo->m_data + (m_pFifo->m_out & m_pFifo->m_mask) * m_elemsize,
                    m_elemsize);
-            std::atomic_thread_fence(std::memory_order_release);
+            std::atomic_thread_fence(std::memory_order_acquire);
             m_pFifo->m_out++;
             return true;
         }

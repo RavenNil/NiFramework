@@ -24,7 +24,9 @@ endif()
 #     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -nostdinc")
 # endif()
 
-include(${CMAKE_TOOLCHAIN_FILE})
+if(DEFINED CMAKE_TOOLCHAIN_FILE)
+    include(${CMAKE_TOOLCHAIN_FILE})
+endif()
 
 if(${PLATFORM} STREQUAL "IMX6ULL")
     message("Detected Platform is IMX6ULL")
