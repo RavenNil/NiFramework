@@ -80,47 +80,47 @@ int read_wav_header(const std::string &filename, WAVHeader &header)
     return 0;
 }
 
-snd_pcm_format_t trans_format(const uint16_t &u16format, const uint16_t &u16BitsPerSample)
-{
-    enum AudioFormat {
-        PCM = 1,
-        IEEE_FLOAT = 3,
-        // 可以添加其他编码格式的枚举值
-    };
-
-    enum BitDepth {
-        BITS_8 = 8,
-        BITS_16 = 16,
-        BITS_24 = 24,
-        BITS_32 = 32,
-        BITS_64 = 64,
-        // 可以添加其他位深度的枚举值
-    };
-
-    //约定俗称的
-    if (u16format == PCM) {
-        if (u16BitsPerSample == BITS_8) {
-            return SND_PCM_FORMAT_U8;
-        } else if (u16BitsPerSample == BITS_16) {
-            return SND_PCM_FORMAT_S16;
-        } else if (u16BitsPerSample == BITS_24) {
-            return SND_PCM_FORMAT_S24;
-        } else if (u16BitsPerSample == BITS_32) {
-            return SND_PCM_FORMAT_S32;
-        } else {
-            return SND_PCM_FORMAT_UNKNOWN;
-        }
-    } else if (u16format == IEEE_FLOAT) {
-        if (u16BitsPerSample == BITS_32) {
-            return SND_PCM_FORMAT_FLOAT;
-        } else if (u16BitsPerSample == BITS_64) {
-            return SND_PCM_FORMAT_FLOAT64;
-        } else {
-            return SND_PCM_FORMAT_UNKNOWN;
-        }
-    } else {
-        printf("unknown audio format, default to SND_PCM_FORMAT_UNKNOWN\n");
-    }
-
-    return SND_PCM_FORMAT_UNKNOWN;
-}
+// snd_pcm_format_t trans_format(const uint16_t &u16format, const uint16_t &u16BitsPerSample)
+// {
+//     enum AudioFormat {
+//         PCM = 1,
+//         IEEE_FLOAT = 3,
+//         // 可以添加其他编码格式的枚举值
+//     };
+//
+//     enum BitDepth {
+//         BITS_8 = 8,
+//         BITS_16 = 16,
+//         BITS_24 = 24,
+//         BITS_32 = 32,
+//         BITS_64 = 64,
+//         // 可以添加其他位深度的枚举值
+//     };
+//
+//     //约定俗称的
+//     if (u16format == PCM) {
+//         if (u16BitsPerSample == BITS_8) {
+//             return SND_PCM_FORMAT_U8;
+//         } else if (u16BitsPerSample == BITS_16) {
+//             return SND_PCM_FORMAT_S16;
+//         } else if (u16BitsPerSample == BITS_24) {
+//             return SND_PCM_FORMAT_S24;
+//         } else if (u16BitsPerSample == BITS_32) {
+//             return SND_PCM_FORMAT_S32;
+//         } else {
+//             return SND_PCM_FORMAT_UNKNOWN;
+//         }
+//     } else if (u16format == IEEE_FLOAT) {
+//         if (u16BitsPerSample == BITS_32) {
+//             return SND_PCM_FORMAT_FLOAT;
+//         } else if (u16BitsPerSample == BITS_64) {
+//             return SND_PCM_FORMAT_FLOAT64;
+//         } else {
+//             return SND_PCM_FORMAT_UNKNOWN;
+//         }
+//     } else {
+//         printf("unknown audio format, default to SND_PCM_FORMAT_UNKNOWN\n");
+//     }
+//
+//     return SND_PCM_FORMAT_UNKNOWN;
+// }

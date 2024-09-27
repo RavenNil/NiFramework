@@ -6,7 +6,7 @@
   > Created Time: Thu 07 Dec 2023 02:57:13 PM CST
  *****************************************************/
 
-#include "alsa/asoundlib.h"
+// #include "alsa/asoundlib.h"
 #include <endian.h>
 
 #include <string>
@@ -92,4 +92,4 @@ struct WAVHeader {
 
 int read_wav_header(const std::string& filename, WAVHeader &header);
 
-snd_pcm_format_t trans_format(const uint16_t &u16format, const uint16_t &u16BitsPerSample);
+// snd_pcm_format_t trans_format(const uint16_t &u16format, const uint16_t &u16BitsPerSample);

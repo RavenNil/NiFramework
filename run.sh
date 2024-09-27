@@ -24,7 +24,7 @@ set_vendor()
 }
 
 ActionList=("all" "lll" "test")
-ACTION="all"
+ACTION="lll"
 set_action()
 {
     for name in ${ActionList[@]}
@@ -57,7 +57,14 @@ set_complie_mode()
     return 1;
 }
 
-tomb()
+THREAD_NUM=16
+set_thread_num()
+{
+    THREAD_NUM=$1
+    return 0;
+}
+
+guide()
 {
     echo_info "$0 -d [ release | debug ] -v [ LOCAL | IMX6ULL ] -n [ all | lll | test ]"
 
@@ -86,21 +93,25 @@ main()
     makeCmd="make -C build -j8 "
 
     # if [ $# -eq 0 ]; then
-    #     tomb;
+    #     guide;
     #     exit 1;
     # fi
 
     while [ $# -gt 0 ]
     do
         case "$1" in
+        -h|--help|help) guide; 
+            exit 0;;
+        -t) set_thread_num $2;
+            shift 2;;
         -v) set_vendor $2;
-            [ $? -eq 1 ] && { tomb; exit 1;}
+            [ $? -eq 1 ] && { guide; exit 1;}
             shift 2;;
         -n) set_action $2;
-            [ $? -eq 1 ] && { tomb; exit 1;}
+            [ $? -eq 1 ] && { guide; exit 1;}
             shift 2;;
         -d) set_complie_mode $2;
-            [ $? -eq 1 ] && { tomb; exit 1;}
+            [ $? -eq 1 ] && { guide; exit 1;}
             shift 2;;
         --) shift
             break;;
@@ -126,7 +137,7 @@ main()
     fi
 
     if [ ${VENDOR} == "IMX6ULL" ]; then
-        cmakeCmd="${cmakeCmd} -DCMAKE_TOOLCHAIN_FILE=./vendor/arm64/imx6ull.cmake"
+        cmakeCmd="${cmakeCmd} -DCMAKE_TOOLCHAIN_FILE=./cmake/vendor/arm64/imx6ull.cmake"
     elif [ ${VENDOR} == "LOCAL" ]; then
         # do nothing use pc toolchains
         cmakeCmd="${cmakeCmd}"
