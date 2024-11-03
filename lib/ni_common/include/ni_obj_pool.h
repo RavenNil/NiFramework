@@ -42,42 +42,20 @@ NI_EXPORT int ni_opool_free_obj(ni_obj_pool_t* pObjPool, void* pObj);
 
 #include <memory>
 
-template <typename T>
-class CNiObjPool
+class CNiObjPoolBase
 {
-   public:
-    CNiObjPool() : m_pObjPool(ni_opool_alloc()) {}
-    ~CNiObjPool() { ni_opool_free(m_pObjPool); }
+   protected:
+    CNiObjPoolBase() : m_pObjPool(ni_opool_alloc()) {}
+    ~CNiObjPoolBase() { ni_opool_free(m_pObjPool); }
 
-    /**
-     * @brief 初始化提前分配好的对象个数
-     *
-     * @param s32InitSize
-     * @return
-     */
-    int InitSize(int s32InitSize) { return ni_opool_init(m_pObjPool, s32InitSize, sizeof(T)); }
+    int InitSize(int s32InitSize, int s32ObjSize)
+    {
+        return ni_opool_init(m_pObjPool, s32InitSize, s32ObjSize);
+    }
 
-    /**
-     * @brief 尝试分配一个对象
-     *
-     * @return 
-     */
-    T* AllocObj() { return reinterpret_cast<T*>(ni_opool_alloc_obj(m_pObjPool)); }
+    void* AllocObj() { return ni_opool_alloc_obj(m_pObjPool); }
 
-    /**
-     * @brief 释放对象
-     *
-     * @param objptr 
-     * @return 
-     */
-    int FreeObj(T* objptr) { return ni_opool_free_obj(m_pObjPool, objptr); }
-
-    /**
-     * @brief
-     *
-     * @return
-     */
-    int GetObjSize() { return sizeof(T); }
+    int FreeObj(void* objptr) { return ni_opool_free_obj(m_pObjPool, objptr); }
 
     /**
      * @brief 获取对象池的长度
@@ -95,6 +73,56 @@ class CNiObjPool
 
    private:
     ni_obj_pool_t* m_pObjPool = nullptr;
+};
+
+template <typename T>
+class CNiObjPool : private CNiObjPoolBase
+{
+   public:
+    using value_type = T;
+    /**
+     * @brief 初始化提前分配好的对象个数
+     *
+     * @param s32InitSize
+     * @return
+     */
+    int InitSize(int s32InitSize) { return CNiObjPoolBase::InitSize(s32InitSize, sizeof(value_type)); }
+
+    /**
+     * @brief 尝试分配一个对象
+     *
+     * @return 
+     */
+    value_type* AllocObj() { return reinterpret_cast<value_type*>(CNiObjPoolBase::AllocObj()); }
+
+    /**
+     * @brief 释放对象
+     *
+     * @param objptr 
+     * @return 
+     */
+    int FreeObj(value_type* objptr) { return CNiObjPoolBase::FreeObj(objptr); }
+
+    /**
+     * @brief
+     *
+     * @return
+     */
+    int GetObjSize() { return sizeof(value_type); }
+
+    /**
+     * @brief 获取对象池的长度
+     *
+     * @return 
+     */
+    int GetPoolLen() { return CNiObjPoolBase::GetPoolLen(); }
+
+    /**
+     * @brief 获取对象池中可用的对象数量
+     *
+     * @return
+     */
+    int GetPoolAvailable() { return CNiObjPoolBase::GetPoolAvailable(); }
 };
 
 #endif

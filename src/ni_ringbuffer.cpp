@@ -13,6 +13,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+static int __ni_rbuff_write_split(ni_rbuff_t* pRbuff, void* pData, uint32_t len);
+static int __ni_rbuff_write_nosplit(ni_rbuff_t* pRbuff, void* pData, uint32_t len);
+
 struct ni_rbuff_t {
     bool mbCompact{false};
     uint8_t* mpData{nullptr};
@@ -50,7 +53,7 @@ int ni_rbuff_free(ni_rbuff_t* pRbuff)
     return 0;
 }
 
-int ni_rbuff_set_compact(ni_rbuff_t* pRbuff, bool bCompact)
+int ni_rbuff_set_split(ni_rbuff_t* pRbuff, bool bCompact)
 {
     if (!pRbuff) return -1;
     pRbuff->mbCompact = bCompact;
@@ -59,14 +62,14 @@ int ni_rbuff_set_compact(ni_rbuff_t* pRbuff, bool bCompact)
 
 
 /**
- * @brief 压缩模式下写入数据
+ * @brief 末尾分裂模式下写入数据
  *
  * @param pRbuff 
  * @param pData 
  * @param len 
  * @return 
  */
-static int __ni_rbuff_write_compact(ni_rbuff_t* pRbuff, void* pData, uint32_t len)
+static int __ni_rbuff_write_split(ni_rbuff_t* pRbuff, void* pData, uint32_t len)
 {
     int s32TailSize = pRbuff->ms32Size - pRbuff->mu32WritePos;
     if (len <= s32TailSize) {
@@ -82,14 +85,14 @@ static int __ni_rbuff_write_compact(ni_rbuff_t* pRbuff, void* pData, uint32_t le
 }
 
 /**
- * @brief 非压缩模式下写入数据
+ * @brief 非末尾分裂模式写入数据
  *
  * @param pRbuff 
  * @param pData 
  * @param len 
  * @return 
  */
-static int __ni_rbuff_write_nocompact(ni_rbuff_t* pRbuff, void* pData, uint32_t len)
+static int __ni_rbuff_write_nosplit(ni_rbuff_t* pRbuff, void* pData, uint32_t len)
 {
     int s32TailSize = pRbuff->ms32Size - pRbuff->mu32WritePos;
     if (len <= s32TailSize) {
@@ -112,9 +115,9 @@ int ni_rbuff_write(ni_rbuff_t* pRbuff, void* pData, uint32_t len)
     int s32WritePos = pRbuff->mu32WritePos;
 
     if (!pRbuff->mbCompact) {
-        __ni_rbuff_write_nocompact(pRbuff, pData, len);
+        __ni_rbuff_write_nosplit(pRbuff, pData, len);
     } else {
-        __ni_rbuff_write_compact(pRbuff, pData, len);
+        __ni_rbuff_write_split(pRbuff, pData, len);
     }
 
     return s32WritePos;

@@ -11,11 +11,11 @@
 #include <thread>
 using namespace std;
 
+#include "./ni_ringbuffer.h"
 #include "ni_common/ni_common.h"
+#include "ni_common/ni_spinlock.h"
 
 #include "CLI11.hpp"
-
-#include "./ni_ringbuffer.h"
 
 struct Event_1 : public CNIEVENT(Event_1) {
     int a;
@@ -63,6 +63,9 @@ class Test2 : public CNiActor
 int main (int argc, char *argv[])
 {
 
+    CNiSpinLock lock;
+    lock.Lock();
+    lock.Unlock();
 
 
     return 0;
