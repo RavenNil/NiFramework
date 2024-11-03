@@ -28,7 +28,12 @@ NI_EXPORT int ni_bus_reg_event(ni_bus_t* pBus, uint64_t u64EventId, void* pListe
 NI_EXPORT int ni_bus_unreg_event(ni_bus_t* pBus, uint64_t u64EventId, void* pListener,
                                  cb_event_t cb);
 NI_EXPORT int ni_bus_request(ni_bus_t* pBus, uint64_t u64EventId, void* pstEvent);
-NI_EXPORT int ni_bus_post_msg(ni_bus_t* pBus, uint64_t u64EventId, void* pstEvent);
+NI_EXPORT int ni_bus_post_msg(ni_bus_t* pBus, uint64_t u64EventId, void* pstEvent,
+                              int s32EventSize);
+
+NI_EXPORT int ni_bus_run(ni_bus_t* pBus);
+NI_EXPORT int ni_bus_run_once(ni_bus_t* pBus);
+
 
 #if defined(__cplusplus)
 }
@@ -72,10 +77,14 @@ class CNiBusBase
         return ni_bus_request(m_pBus, u64EventId, pstEvent);
     }
 
-    int PostEvent(void* pstEvent, const uint64_t u64EventId)
+    int PostEvent(void* pstEvent, const uint64_t u64EventId, int32_t s32EventSize)
     {
-        return ni_bus_post_msg(m_pBus, u64EventId, pstEvent);
+        return ni_bus_post_msg(m_pBus, u64EventId, pstEvent, s32EventSize);
     }
+
+    void Run() { ni_bus_run(m_pBus); }
+
+    void RunOnce() { ni_bus_run_once(m_pBus); }
 
    private:
     ni_bus_t* m_pBus = nullptr;
@@ -89,6 +98,9 @@ class CNiBus : private CNiBusBase
 
    public:
     CNiBus() : CNiBusBase() {}
+
+    using CNiBusBase::Run;
+    using CNiBusBase::RunOnce;
 
     template <typename TEvent>
     int RegisterEvent(CNiActor& stActor)
@@ -111,7 +123,7 @@ class CNiBus : private CNiBusBase
     template <typename TEvent>
     int PostEvent(TEvent&& stEvent)
     {
-        return CNiBusBase::PostEvent(&stEvent, std::decay_t<TEvent>::hash());
+        return CNiBusBase::PostEvent(&stEvent, std::decay_t<TEvent>::hash(), sizeof(stEvent));
     }
 };
 

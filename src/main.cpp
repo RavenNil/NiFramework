@@ -62,11 +62,20 @@ class Test2 : public CNiActor
 
 int main (int argc, char *argv[])
 {
+    CNiBusDefault& bus = CNiBusDefault::Instance();
 
-    CNiSpinLock lock;
-    lock.Lock();
-    lock.Unlock();
+    std::thread([&]() -> void { bus.Run(); }).detach();
 
+    Test1 test1;
+    Test2 test2;
+    test1.RegisterEvent<Event_1>();
+
+    while (true) {
+        Event_1 stEvent;
+        test2.PostEvent(stEvent);
+        printf("wait\n");
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    }
 
     return 0;
 }
