@@ -7,22 +7,6 @@ echo_info() { echo -e "\e[32;40m $* \e[0m"; }
 echo_err() { echo -e "\e[41;37m $* \e[0m"; }
 echo_warn() { echo -e "\e[43;37m $* \e[0m"; }
 
-VendorList=("IMX6ULL" "LOCAL");
-VENDOR="LOCAL"
-set_vendor()
-{
-    for name in ${VendorList[@]}
-    do
-        if [ ${name} == $1 ]; then
-            VENDOR=$1
-            echo_info "found vendor ${VENDOR}"
-            return 0;
-        fi
-    done
-    echo_err "ERR! not found any vendor called $1"
-    return 1;
-}
-
 ActionList=("all" "lll" "test")
 ACTION="lll"
 set_action()
@@ -66,11 +50,7 @@ set_thread_num()
 
 guide()
 {
-    echo_info "$0 -d [ release | debug ] -v [ LOCAL | IMX6ULL ] -n [ all | lll | test ]"
-
-    echo "VENDOR is ${VENDOR}"
-    echo "Supported VENDOR: "
-    echo_info "${VendorList[@]}"
+    echo_info "$0 -d [ release | debug ] -n [ all | lll | test ]"
 
     echo "ACTION is ${ACTION}"
     echo "Supported ACTION: "
@@ -104,9 +84,6 @@ main()
             exit 0;;
         -t) set_thread_num $2;
             shift 2;;
-        -v) set_vendor $2;
-            [ $? -eq 1 ] && { guide; exit 1;}
-            shift 2;;
         -n) set_action $2;
             [ $? -eq 1 ] && { guide; exit 1;}
             shift 2;;
@@ -120,9 +97,8 @@ main()
     done
 
     # 检查参数是否有效
-    [ -z ${VENDOR} ] || [ -z ${COMPILE_MODE} ] || [ -z ${ACTION} ] && {
+    [ -z ${COMPILE_MODE} ] || [ -z ${ACTION} ] && {
         echo_err "options loss!"
-        [ -z ${VENDOR} ] && { echo_err "loss vendor option"; }
         [ -z ${COMPILE_MODE} ] && { echo_err "loss compile mode option"; }
         [ -z ${ACTION} ] && { echo_err "loss action option"; }
         exit 1;
@@ -135,16 +111,6 @@ main()
     else
         echo_warn "unknown compile mode"
     fi
-
-    if [ ${VENDOR} == "IMX6ULL" ]; then
-        cmakeCmd="${cmakeCmd} -DCMAKE_TOOLCHAIN_FILE=./cmake/vendor/arm64/imx6ull.cmake"
-    elif [ ${VENDOR} == "LOCAL" ]; then
-        # do nothing use pc toolchains
-        cmakeCmd="${cmakeCmd}"
-    else
-        echo_warn "unknown vendor"
-    fi
-    cmakeCmd="${cmakeCmd} -DVENDOR:STRING=${VENDOR}"
 
     echo_info "CMake cmd: ${cmakeCmd}"
 
